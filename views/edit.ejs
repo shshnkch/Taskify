@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Edit Task</h1>
+    <hr>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/todo">To Do List</a>
+        <a href="/todo/new">New Task</a>
+    </nav>
+    <hr>
+    <br>
+    <form action="/todo/<%= task._id %>?_method=PUT" method="POST">
+        <label for="name">Task Name:</label>
+        <input type="text" id="name" name="name" value="<%= task.name %>" required>
+    
+        <label for="category">Category:</label>
+        <select id="category" name="category">
+            <% category.forEach(c => { %>
+                <option value="<%= c %>" <%= task.category === c ? 'selected' : '' %>><%= c %></option>
+            <% }) %>
+        </select>
+    
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+            <% priority.forEach(p => { %>
+                <option value="<%= p %>" <%= task.priority === p ? 'selected' : '' %>><%= p %></option>
+            <% }) %>
+        </select>
+    
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <% status.forEach(s => { %>
+                <option value="<%= s %>" <%= task.status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+        </select>
+    
+        <button type="submit">Save Changes</button>
+    </form>
+    
+</body>
+</html>

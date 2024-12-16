@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Task</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Add A New Task</h1>
+    <hr>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/todo">To Do List</a>
+        <a href="/todo/new">New Task</a>
+    </nav>
+    <hr> 
+    <form action="/todo" method="POST">
+        <label for="name">Task Name</label>
+        <input type="text" name="name" id="name" placeholder="Task Name">
+        <label for="category">Category</label>
+        <select name="category" id="category">
+            <% for(let cat of category) { %>
+                <option value="<%=cat%>"><%=cat%></option>
+            <% } %>
+        </select>
+        <label for="priority">Priority</label>
+        <select name="priority" id="priority">
+            <% for(let prior of priority) { %>
+                <option value="<%=prior%>"><%=prior%></option>
+            <% } %>
+        </select>
+        <label for="status">Status</label>
+        <select name="status" id="status">
+            <% for(let stat of status) { %>
+                <option value="<%=stat%>"><%=stat%></option>
+            <% } %>
+        </select>
+        <button>Add Task</button>
+    </form>
+</body>
+</html>

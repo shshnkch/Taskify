@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Tasks</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Your ToDoList Tasks</h1>
+    <hr>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/todo">To Do List</a>
+        <a href="/todo/new">New Task</a>
+    </nav>
+    <hr>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(task of tasks) { %>
+                <tr>
+                    <td><%=task.name%></td>
+                    <td><%=task.category%></td>
+                    <td><%=task.priority%></td>
+                    <td>
+                        <form action="/todo/<%=task._id%>/updateStatus" method="POST">
+                            <select name="status" onchange="this.form.submit()">
+                                <option value="Pending" <%= task.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                                <option value="Completed" <%= task.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/todo/<%= task._id %>/delete" method="POST">
+                            <button>Delete Task</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/todo/<%= task._id %>/edit">
+                            <button>Edit Task</button>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>
