@@ -19,8 +19,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/toDoList')
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-
-
 const category = ['Work', 'Personal', 'Shopping'];
 const status = ['Pending', 'In Progress', 'Completed'];
 const priority = ['Low', 'Medium', 'High'];
@@ -28,45 +26,89 @@ const priority = ['Low', 'Medium', 'High'];
 app.listen(3000, () => console.log('Listening on port 3000'));
 
 app.get('/home', (req, res) => {
-    res.render('home');
+    try {
+        res.render('home');
+    } catch (err) {
+        res.status(500).send('Error loading home page');
+    }
 });
 
 app.get('/todo', async (req, res) => {
-    const tasks = await ToDo.find({});
-    res.render('todo', { tasks });
+    try {
+        const tasks = await ToDo.find({});
+        res.render('todo', { tasks });
+    } catch (err) {
+        res.status(500).send('Error fetching tasks');
+    }
 });
 
 app.get('/todo/new', (req, res) => {
-    res.render('new', { category, status, priority });
+    try {
+        res.render('new', { category, status, priority });
+    } catch (err) {
+        res.status(500).send('Error loading new task form');
+    }
 });
 
 app.post('/todo', async (req, res) => {
-    const newToDo = new ToDo(req.body);
-    await newToDo.save();
-    res.redirect('/todo');
+    try {
+        const newToDo = new ToDo(req.body);
+        await newToDo.save();
+        res.redirect('/todo');
+    } catch (err) {
+        res.status(400).send('Error creating new task: ' + err.message);
+    }
 });
 
 app.get('/todo/:id/edit', async (req, res) => {
-    const { id } = req.params;
-    const task = await ToDo.findById(id);
-    res.render('edit', { task, category, status, priority });
+    try {
+        const { id } = req.params;
+        const task = await ToDo.findById(id);
+        if (!task) {
+            return res.status(404).send('Task not found');
+        }
+        res.render('edit', { task, category, status, priority });
+    } catch (err) {
+        res.status(500).send('Error loading edit form');
+    }
 });
 
 app.put('/todo/:id', async (req, res) => {
-    const { id } = req.params;
-    await ToDo.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
-    res.redirect('/todo');
+    try {
+        const { id } = req.params;
+        const updatedTask = await ToDo.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
+        if (!updatedTask) {
+            return res.status(404).send('Task not found');
+        }
+        res.redirect('/todo');
+    } catch (err) {
+        res.status(400).send('Error updating task: ' + err.message);
+    }
 });
 
 app.post('/todo/:id/updateStatus', async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    await ToDo.findByIdAndUpdate(id, { status });
-    res.redirect('/todo');
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const updatedTask = await ToDo.findByIdAndUpdate(id, { status });
+        if (!updatedTask) {
+            return res.status(404).send('Task not found');
+        }
+        res.redirect('/todo');
+    } catch (err) {
+        res.status(400).send('Error updating task status: ' + err.message);
+    }
 });
 
 app.post('/todo/:id/delete', async (req, res) => {
-    const { id } = req.params;
-    await ToDo.findByIdAndDelete(id);
-    res.redirect('/todo');
+    try {
+        const { id } = req.params;
+        const deletedTask = await ToDo.findByIdAndDelete(id);
+        if (!deletedTask) {
+            return res.status(404).send('Task not found');
+        }
+        res.redirect('/todo');
+    } catch (err) {
+        res.status(500).send('Error deleting task');
+    }
 });
